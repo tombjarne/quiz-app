@@ -58,7 +58,7 @@ namespace Lifekeys.Services
             return null;
         }
 
-        public async Task<bool> CheckAnswer(string quizId, string questionId, string answerId)
+        public async Task<bool> CheckAnswer(string answerId)
         {
             // TODO: introduce hashing and de-hashing in the future
             try
@@ -71,6 +71,22 @@ namespace Lifekeys.Services
             catch (InvalidOperationException e)
             {
                 Debug.WriteLine(e.StackTrace);
+                return false;
+            }
+        }
+
+        public async Task<bool> CheckTrueFalseAnswer(string questionId, bool answer)
+        {
+            // TODO: introduce hashing and de-hashing in the future
+            try
+            {
+                var result = await _quizContext.Questions
+                    .SingleAsync(a => a.Id == questionId && a.IsTrue == answer);
+
+                return result != null;
+            }
+            catch (InvalidOperationException e)
+            {
                 return false;
             }
         }
