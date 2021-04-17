@@ -53,12 +53,29 @@ namespace Lifekeys.Services
             }
         }
 
-        public async Task<IActionResult> CheckAnswer(string quizId, string questionId, string answerId)
+        public async Task<IActionResult> CheckAnswer(string answerId)
         {
-
             try
             {
-                var result = await _dbService.CheckAnswer(quizId, questionId, answerId);
+                var result = await _dbService.CheckAnswer(answerId);
+
+                return StatusCode(200, JsonConvert.SerializeObject(result));
+            }
+            catch (InvalidOperationException)
+            {
+                return StatusCode(500);
+            }
+            catch (SqlException)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        public async Task<IActionResult> CheckTrueFalseAnswer(string questionId, bool answer)
+        {
+            try
+            {
+                var result = await _dbService.CheckTrueFalseAnswer(questionId, answer);
 
                 return StatusCode(200, JsonConvert.SerializeObject(result));
             }

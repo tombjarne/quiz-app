@@ -53,7 +53,11 @@ namespace Lifekeys.Controllers
         public async Task<IActionResult> SubmitAnswer(
             string quizId, string questionId, [FromBody] AnswerSchema answer)
         {
-            return await _quizService.GetQuestionById(answer.QuestionId);
+            if (answer.Type == 2)
+            {
+                return await _quizService.CheckTrueFalseAnswer(answer.QuestionId, answer.Solution);
+            }
+            return await _quizService.CheckAnswer(answer.QuestionId);
         }
 
         [HttpGet("{quizId}/questions/{questionId}/answers")]
