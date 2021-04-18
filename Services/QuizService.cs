@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Lifekeys.Schemas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -75,7 +77,8 @@ namespace Lifekeys.Services
         {
             try
             {
-                var result = await _dbService.CheckTrueFalseAnswer(questionId, answer);
+                var value = await _dbService.CheckTrueFalseAnswer(questionId, answer);
+                var result = new AnswerResponseSchema(value);
 
                 return StatusCode(200, JsonConvert.SerializeObject(result));
             }
@@ -111,7 +114,16 @@ namespace Lifekeys.Services
             try
             {
                 var result = await _dbService.GetQuestionsForId(id);
-                return StatusCode(200, JsonConvert.SerializeObject(result));
+                var questionIds = new List<string>();
+
+                foreach (var element in result)
+                {
+                    questionIds.Add(element.Id);
+                }
+
+                var questions = new QuestionIdsResponseSchema(questionIds);
+
+                return StatusCode(200, JsonConvert.SerializeObject(questions));
             }
             catch (InvalidOperationException)
             {
