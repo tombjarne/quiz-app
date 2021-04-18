@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lifekeys.Migrations
 {
     [DbContext(typeof(QuizContext))]
-    [Migration("20210417125412_InitialQuizMigration")]
+    [Migration("20210417164036_InitialQuizMigration")]
     partial class InitialQuizMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

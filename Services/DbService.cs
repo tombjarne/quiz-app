@@ -23,7 +23,6 @@ namespace Lifekeys.Services
 
         public async Task<List<Quiz>> GetAllQuizzes()
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
                 return await _quizContext.Quizzes
@@ -39,7 +38,6 @@ namespace Lifekeys.Services
 
         public async Task<Quiz> GetRandom()
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
                 var random = new Random();
@@ -60,7 +58,6 @@ namespace Lifekeys.Services
 
         public async Task<bool> CheckAnswer(string answerId)
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
                 var result = await _quizContext.Answers
@@ -77,7 +74,6 @@ namespace Lifekeys.Services
 
         public async Task<bool> CheckTrueFalseAnswer(string questionId, bool answer)
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
                 var result = await _quizContext.Questions
@@ -93,7 +89,6 @@ namespace Lifekeys.Services
 
         public async Task<Quiz> GetSingleById(string id)
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
                 return await _quizContext.Quizzes
@@ -109,7 +104,6 @@ namespace Lifekeys.Services
 
         public async Task<List<Question>> GetQuestionsForId(string id)
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
                 return await _quizContext.Questions
@@ -126,11 +120,39 @@ namespace Lifekeys.Services
 
         public async Task<Question> GetQuestionById(string id)
         {
-            // TODO: introduce hashing and de-hashing in the future
             try
             {
-                return await _quizContext.Questions
+                var test = await _quizContext.Questions
                     .SingleAsync(q => q.Id == id);
+
+                Debug.WriteLine(test);
+
+                var question = _quizContext.Questions
+                    .Select(q => new Question
+                    {
+                        Id = q.Id,
+                        Answers = q.Answers.Select(a => new Answer()
+                        {
+                            Id = a.Id,
+                            ParentSolution = a.ParentSolution,
+                            SolutionId = a.SolutionId,
+                            Value = a.Value
+                        }).ToList(),
+                        IsTrue = q.IsTrue,
+                        ParentQuiz = q.ParentQuiz,
+                        QuestionText = q.QuestionText,
+                        QuizId = q.Id,
+                        Solutions = q.Solutions.Select(s => new Solution()
+                        {
+                            Answers = s.Answers,
+                            Id = s.Id,
+                            Parent = q,
+                            QuestionId = q.Id
+                        }).ToList(),
+                        Type = q.Type
+                    });
+
+                return question.First();
             }
             catch (InvalidOperationException e)
             {
